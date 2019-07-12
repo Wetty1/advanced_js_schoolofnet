@@ -4,11 +4,15 @@ var list = [
     {"desc": "meat", "amount": "1", "value": "15"}
 ]
 
-var total = 0
+function getTotal(){
+  var total = 0
   for (var i in list) {
       total += list[i].value * list[i].amount
+  }
+
+  document.getElementById("totalValue").innerHTML = '$ '+formatValue(total)
+  return total
 }
-console.log(total)
 
 function setList (list) {
   var table = '<thead><tr><th scope="col">Description</th><th scope="col">Amount</th><th scope="col">Value</th><th scope="col">Action</th></tr></thead>'
@@ -18,20 +22,22 @@ function setList (list) {
               <td>${formatDesc(list[i].desc)}</td>
               <td>${list[i].amount}</td>
               <td>$ ${formatValue(list[i].value)}</td>
-              <td><p><button class="btn btn-success" onclick="setFormUpdate(${i})">Edit</button><button class="btn btn-danger">Delete</button></p></td>
+              <td><button class="btn btn-success" onclick="setFormUpdate(${i})">Edit</button> 
+              <button class="btn btn-danger" onclick="deleteData(${i})">Delete</button></td>
             </tr>`
   }
   table += '</tbody>'
 
   document.getElementById("table").innerHTML = table
+  getTotal()
 }
 
 setList(list)
 
 function formatDesc (desc) {
-    var str = desc
-    str = str.charAt(0).toUpperCase() + str.slice(1)
-    return str
+  var str = desc
+  str = str.charAt(0).toUpperCase() + str.slice(1)
+  return str
 }
 
 function formatValue (value){
@@ -42,6 +48,9 @@ function formatValue (value){
 }
 
 function setAdd(){
+  if(!validation()) {
+    return;
+  }
   var desc = document.getElementById("desc").value
   var amount = document.getElementById("amount").value
   var value = document.getElementById("value").value
@@ -70,9 +79,13 @@ function setFormCancel () {
   document.getElementById("spanIDUpdate").innerHTML = ''
   document.getElementById("btnUpdate").style.display = "none"
   document.getElementById("btnAdd").style.display = "inline-block"
+  document.getElementById("errors").style.display = "none"
 }
 
 function updateData() {
+  if(!validation()) {
+    return;
+  }
   var id = document.getElementById("IDobj").value
   var desc = document.getElementById("desc").value
   var amount = document.getElementById("amount").value
@@ -85,4 +98,52 @@ function updateData() {
   setFormCancel()
 }
 
+function deleteData(id) {
+  if(id == 0) {
+    list.shift()
+  } else if (id == list.length - 1){
+    list.pop()
+  } else {
+    var listIni = list.slice(0, id)
+    var listEnd = list.splice(id + 1)
+    list = listIni.concat(listEnd)
+  }  
+  setList(list)
+}
 
+function validation () {
+  document.getElementById("errors").style.display = "none"
+  var desc = document.getElementById("desc").value
+  var amount = document.getElementById("amount").value
+  var value = document.getElementById("value").value
+  var errors = ""
+
+  if (desc === "") {
+    errors += `<p>Fill out description</p>`
+  } 
+
+  if (amount === "") {
+    errors += `<p>Fill out amount</p>`
+  } else if (amount != parseInt(amount)) {
+    errors += `<p>Fill out a valid amount</p>`
+  } 
+
+  if (value === "") {
+    errors += `<p>Fill out value</p>`
+  } else if (value != parseInt(value)){
+    errors += `<p>Fill out a valid value</p>`
+  }
+
+  if (errors != "") {
+    document.getElementById("errors").style.display = "block"
+    document.getElementById("errors").style.backgroundColor = "rgba(85, 85 ,85, 0.3)"
+    document.getElementById("errors").style.color = "white"
+    document.getElementById("errors").style.padding = "10px"
+    document.getElementById("errors").style.borderRadius = "3px"
+    document.getElementById("errors").style.margin = "10px"
+    document.getElementById("errors").innerHTML = `<h3>Errors</h3>` + errors
+    return 0
+  } else {
+    return 1
+  }
+}
