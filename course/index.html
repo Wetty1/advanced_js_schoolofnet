@@ -31,7 +31,12 @@
           <button class="btn btn-success" onclick="updateData()">save</button>
           <button class="btn btn-danger" onclick="setFormCancel()">cancel</button>
         </div>
-        <button class="btn btn-success" id="btnAdd" onclick="setAdd()">add</button>
+        <span id="btnAdd">
+          <button class="btn btn-success" onclick="setAdd()">add</button>
+          <button class="btn btn-gray" onclick="setFormCancel()">reset</button>
+          <button class="btn btn-danger" onclick="deleteList()">reset</button>
+        </span>
+        
       </div>
     </div>
     

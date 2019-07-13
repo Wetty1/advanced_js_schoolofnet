@@ -30,6 +30,7 @@ function setList (list) {
 
   document.getElementById("table").innerHTML = table
   getTotal()
+  saveListStorage(list)
 }
 
 setList(list)
@@ -99,6 +100,9 @@ function updateData() {
 }
 
 function deleteData(id) {
+  if(!confirm("Delete this item?")){
+    return;
+  }
   if(id == 0) {
     list.shift()
   } else if (id == list.length - 1){
@@ -147,3 +151,23 @@ function validation () {
     return 1
   }
 }
+
+function deleteList() {
+  if(confirm("Delete this list?"))
+  list = [];
+  setList(list)
+}
+
+function saveListStorage(list) {
+  var jsonStr = JSON.stringify(list)
+  localStorage.setItem("list", jsonStr)
+}
+
+function initListStorage () {
+  var testList = localStorage.getItem("list")
+  if(testList) {
+    list = JSON.parse(testList)
+  }
+  setList(list)
+}
+initListStorage()
